@@ -1,8 +1,7 @@
-use crate::config;
-use crate::terminal;
-use crate::utils;
+use crate::config::{Config, ConfigError, FILE_NAME};
+use crate::terminal::Terminal;
 use clap::{App, Arg, ArgMatches};
-use config::Config;
+use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
@@ -27,6 +26,13 @@ impl<'a> CLI<'a> {
             .arg(
                 Arg::with_name("command")
                     .help("Runs a command that specified in config file")
+                    .multiple(false)
+                    .required(false)
+                    .takes_value(true),
+            )
+            .arg(
+                Arg::with_name("args")
+                    .help("Sends parameters for a command")
                     .multiple(true)
                     .required(false)
                     .takes_value(true),
@@ -37,32 +43,121 @@ impl<'a> CLI<'a> {
         }
     }
 
-    pub fn run(&self) {
-        let mut t = terminal::Terminal::new();
+    pub fn run(self) -> exitcode::ExitCode {
+        let code;
+        let mut term = Terminal::new();
+
         if self.arg_matches.is_present("init") {
             match self.init_file() {
-                Err(e) => t.error(&format!("{}", e)),
-                _ => t.line("Done."),
+                Err(e) => {
+                    code = exitcode::OSFILE;
+                    term.error(&format!("{}", e));
+                }
+                _ => {
+                    code = exitcode::OK;
+                    term.write_line("Done.")
+                }
             }
-        } else {
-            match utils::get_config() {
-                Ok(config) => config.print_usage(),
-                Err(msg) => t.error(&msg),
+            return code;
+        }
+
+        match self.get_config() {
+            Ok(config) => {
+                code = match self.arg_matches.value_of("command") {
+                    Some(command) => self.run_commands(term, config, command),
+                    None => self.print_usage(term, config),
+                };
+            }
+            Err(msg) => {
+                code = exitcode::OSFILE;
+                term.error(&format!("{}", msg));
             }
         }
-        // if let Some(command) = self.arg_matches.values_of("command") {
-        //     println!("Command: {:?}", command);
-        // }
+
+        code
+    }
+
+    fn print_usage(self, mut term: Terminal, config: Config) -> exitcode::ExitCode {
+        term.title("Environments");
+        for environment in config.environments {
+            term.write_line(&format!(" - {}", environment));
+        }
+        term.new_line();
+
+        term.title("Commands");
+        for (name, command) in config.commands {
+            term.write_line(&format!(
+                "  > {name:20} {help_text}",
+                name = name,
+                help_text = command.help_text
+            ));
+        }
+
+        exitcode::OK
+    }
+
+    fn run_commands(
+        &self,
+        mut term: Terminal,
+        config: Config,
+        command: &str,
+    ) -> exitcode::ExitCode {
+        let args: Vec<&str> = match self.arg_matches.values_of("args") {
+            Some(args) => args.collect(),
+            None => vec![],
+        };
+
+        term.write(&format!("{:>11}: ", "Environment"), Some(term::color::CYAN));
+        term.write("development", None);
+        term.new_line();
+
+        term.write(&format!("{:>11}: ", "Command"), Some(term::color::CYAN));
+        match config.run_command(&command, args) {
+            Ok(_) => term.write(&format!("{}, ", command), None),
+            Err(msg) => {
+                term.error(&msg);
+                return exitcode::DATAERR;
+            }
+        }
+        term.new_line();
+        exitcode::OK
     }
 
     fn init_file(&self) -> std::io::Result<()> {
-        if Path::new(config::FILE_NAME).exists() {
-            let error_msg = format!("The file {} already exists.", config::FILE_NAME);
+        if Path::new(FILE_NAME).exists() {
+            let error_msg = format!("The file {} already exists.", FILE_NAME);
             return Err(std::io::Error::new(std::io::ErrorKind::Other, error_msg));
         }
-        let config_default = serde_yaml::to_string(&Config::new()).unwrap();
-        let mut config_file = File::create(config::FILE_NAME)?;
-        config_file.write_all(config_default.as_bytes())?;
+        let mut config = Config::new();
+        config.get_default();
+
+        let content = serde_yaml::to_string(&config).unwrap();
+        let mut config_file = File::create(FILE_NAME)?;
+        config_file.write_all(content.as_bytes())?;
+
         Ok(())
+    }
+
+    fn get_config(&self) -> Result<Config, ConfigError> {
+        let mut current_dir = env::current_dir().unwrap();
+        loop {
+            if current_dir.join(FILE_NAME).exists() {
+                break;
+            }
+            match current_dir.parent() {
+                Some(parent_dir) => current_dir = parent_dir.to_path_buf(),
+                None => {
+                    let msg = format!("Config file {} could not be found.", FILE_NAME);
+                    return Err(ConfigError::Other(msg));
+                }
+            }
+        }
+
+        let mut config_str = String::new();
+        let mut config_file = File::open(current_dir.join(FILE_NAME)).unwrap();
+        config_file.read_to_string(&mut config_str).unwrap();
+
+        let config: Config = serde_yaml::from_str(&config_str)?;
+        Ok(config)
     }
 }

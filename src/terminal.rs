@@ -1,6 +1,3 @@
-extern crate term;
-use std::io::prelude::*;
-
 pub struct Terminal {
     stdout: Box<term::StdoutTerminal>,
     stderr: Box<term::StderrTerminal>,
@@ -14,7 +11,7 @@ impl Terminal {
         }
     }
 
-    pub fn empty_line(&mut self) {
+    pub fn new_line(&mut self) {
         writeln!(self.stdout, "").unwrap();
     }
 
@@ -24,13 +21,19 @@ impl Terminal {
         self.stderr.reset().unwrap();
     }
 
-    pub fn line(&mut self, text: &str) {
-        writeln!(self.stdout, "{}", text).unwrap();
+    pub fn write(&mut self, text: &str, color: Option<term::color::Color>) {
+        self.stdout.fg(color.unwrap_or(term::color::WHITE)).unwrap();
+        write!(self.stdout, "{}", text).unwrap();
+        self.stdout.reset().unwrap();
+    }
+
+    pub fn write_line(&mut self, text: &str) {
+        self.write(text, None);
+        self.new_line();
     }
 
     pub fn title(&mut self, text: &str) {
-        self.stdout.fg(term::color::CYAN).unwrap();
-        writeln!(self.stdout, "{}", text).unwrap();
-        self.stdout.reset().unwrap();
+        self.write(text, Some(term::color::CYAN));
+        self.new_line();
     }
 }
