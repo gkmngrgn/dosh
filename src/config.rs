@@ -1,9 +1,11 @@
 use serde::{Deserialize, Serialize};
 use serde_yaml::{Mapping, Number, Value};
 use std::collections::HashMap;
+use std::env;
 use std::fmt;
 
 pub static FILE_NAME: &str = "dosh.yaml";
+pub static ENV_NAME: &str = "DOSH_ENV";
 
 #[derive(Debug, PartialEq, Serialize, Deserialize)]
 pub struct Config {
@@ -80,16 +82,24 @@ impl Config {
 
     pub fn run_command(&self, command: &str, _: Vec<&str>) -> Result<(), String> {
         // TODO: second parameter is for the command arguments. Name it as args later.
+        let environment = env::var(ENV_NAME).unwrap_or("".to_string());
         match self.commands.get(command) {
             Some(cmd) => {
-                // TODO: check env here.
+                if let None = cmd.environments.iter().position(|e| e == &environment) {
+                    let msg = format!(
+                        "The command \"{}\" is not available for the environment \"{}\".",
+                        command, environment
+                    );
+                    return Err(msg);
+                }
+
                 let cmd_runs: Vec<String> = match &cmd.run {
                     CommandRun::OneLine(run) => vec![run.to_string()],
                     CommandRun::Group(runs) => runs.clone(),
                 };
-                for cmd_run in cmd_runs {
-                    println!("{:?}", cmd_run);
-                }
+                // for cmd_run in cmd_runs {
+                //     println!("{:?}", cmd_run);
+                // }
             }
             None => return Err(format!("Unknown command: {}.", command)),
         }

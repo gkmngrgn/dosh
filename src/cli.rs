@@ -1,4 +1,4 @@
-use crate::config::{Config, ConfigError, FILE_NAME};
+use crate::config::{Config, ConfigError, ENV_NAME, FILE_NAME};
 use crate::terminal::Terminal;
 use clap::{App, Arg, ArgMatches};
 use std::env;
@@ -102,24 +102,27 @@ impl<'a> CLI<'a> {
         config: Config,
         command: &str,
     ) -> exitcode::ExitCode {
+        let environment = &env::var(ENV_NAME).unwrap_or("Unspecified".to_string());
         let args: Vec<&str> = match self.arg_matches.values_of("args") {
             Some(args) => args.collect(),
             None => vec![],
         };
 
         term.write(&format!("{:>11}: ", "Environment"), Some(term::color::CYAN));
-        term.write("development", None);
+        term.write(environment, None);
         term.new_line();
 
-        term.write(&format!("{:>11}: ", "Command"), Some(term::color::CYAN));
         match config.run_command(&command, args) {
-            Ok(_) => term.write(&format!("{}, ", command), None),
+            Ok(_) => {
+                term.write(&format!("{:>11}: ", "Command"), Some(term::color::CYAN));
+                term.write(&format!("{}, ", command), None);
+                term.new_line();
+            }
             Err(msg) => {
                 term.error(&msg);
                 return exitcode::DATAERR;
             }
         }
-        term.new_line();
         exitcode::OK
     }
 
