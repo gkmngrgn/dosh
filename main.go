@@ -1,4 +1,4 @@
-package main
+package dosh
 
 import (
 	"flag"
@@ -14,6 +14,12 @@ const (
 	CommandVersion
 	CommandUnknown
 )
+
+type Task struct {
+	Name        string
+	Description string
+	Command     string
+}
 
 func parseCommand(args []string) Command {
 	if len(args) == 0 {
@@ -33,9 +39,22 @@ func parseCommand(args []string) Command {
 	}
 }
 
-func generateHelpOutput() string {
-	// Common DOSH commands
-	helpOutput := []string{
+func generateHelpOutput(tasks []Task, description string, epilog string) string {
+	helpOutput := []string{}
+
+	if description != "" {
+		helpOutput = append(helpOutput, description, "")
+	}
+
+	if len(tasks) > 0 {
+		helpOutput = append(helpOutput, "Available tasks:")
+
+		for _, task := range tasks {
+			helpOutput = append(helpOutput, fmt.Sprintf("  > %-20s %s", task.Name, task.Description))
+		}
+	}
+
+	helpOutput = append(helpOutput,
 		"DOSH commands:",
 		"  > help                 print this output",
 		"  > init                 initialize a new config in current working directory",
@@ -45,21 +64,30 @@ func generateHelpOutput() string {
 		"  -d, --directory PATH   change the working directory",
 		"  -v|vv|vvv, --verbose   increase the verbosity of messages:",
 		"                         1 - default, 2 - detailed, 3 - debug",
+	)
+
+	if epilog != "" {
+		helpOutput = append(helpOutput, "", epilog)
 	}
 
-	// TODO: prepare description
-
-	// TODO: prepare tasks section
 	return strings.Join(helpOutput, "\n")
 }
 
 func main() {
+	// parse arguments
 	flag.Parse()
+	args := flag.Args()
 
-	command := parseCommand(flag.Args())
-	if command == CommandHelp {
-		fmt.Println(generateHelpOutput())
-		return
+	// initialize config parser
+	configParser := NewConfigParser()
+
+	// run command looking at the first argument
+	switch parseCommand(args) {
+	case CommandHelp:
+		tasks := configParser.getTasks()
+		description := configParser.getDescription()
+		epilog := configParser.getEpilog()
+		fmt.Println(generateHelpOutput(tasks, description, epilog))
 	}
 
 	// l := lua.NewState()
