@@ -1,4 +1,4 @@
-package dosh
+package main
 
 type ConfigParser struct {
 }
@@ -28,7 +28,7 @@ func (c *ConfigParser) getTasks() []Task {
 }
 
 func (c *ConfigParser) getDescription() string {
-	return "DOSH is a task runner for Go projects."
+	return "dosh - shell-independent task manager"
 }
 
 func (c *ConfigParser) getEpilog() string {

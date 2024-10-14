@@ -1,4 +1,4 @@
-package dosh
+package main
 
 import (
 	"flag"
@@ -47,11 +47,13 @@ func generateHelpOutput(tasks []Task, description string, epilog string) string 
 	}
 
 	if len(tasks) > 0 {
-		helpOutput = append(helpOutput, "Available tasks:")
+		helpOutput = append(helpOutput, "Tasks:")
 
 		for _, task := range tasks {
 			helpOutput = append(helpOutput, fmt.Sprintf("  > %-20s %s", task.Name, task.Description))
 		}
+
+		helpOutput = append(helpOutput, "")
 	}
 
 	helpOutput = append(helpOutput,
@@ -88,6 +90,8 @@ func main() {
 		description := configParser.getDescription()
 		epilog := configParser.getEpilog()
 		fmt.Println(generateHelpOutput(tasks, description, epilog))
+	case CommandVersion:
+		fmt.Println(getVersion())
 	}
 
 	// l := lua.NewState()
