@@ -6,6 +6,18 @@ import (
 	"strings"
 )
 
+var (
+	argConfigPath string
+	argVerbose    int
+)
+
+func init() {
+	flag.StringVar(&argConfigPath, "c", ".", "Path to the configuration file")
+	flag.IntVar(&argVerbose, "v", 0, "Enable verbose output")
+
+	initLogger()
+}
+
 type Command int
 
 const (
@@ -14,12 +26,6 @@ const (
 	CommandVersion
 	CommandUnknown
 )
-
-type Task struct {
-	Name        string
-	Description string
-	Command     string
-}
 
 func parseCommand(args []string) Command {
 	if len(args) == 0 {
@@ -62,9 +68,9 @@ func generateHelpOutput(tasks []Task, description string, epilog string) string 
 		"  > init                 initialize a new config in current working directory",
 		"  > version              print version of DOSH",
 		"",
-		"  -c, --config PATH      specify config path (default: dosh.lua)",
-		"  -d, --directory PATH   change the working directory",
-		"  -v|vv|vvv, --verbose   increase the verbosity of messages:",
+		"  -c string              specify config path (default: dosh.lua)",
+		"  -d string              change the working directory",
+		"  -v int                 increase the verbosity of messages:",
 		"                         1 - default, 2 - detailed, 3 - debug",
 	)
 
@@ -76,12 +82,19 @@ func generateHelpOutput(tasks []Task, description string, epilog string) string 
 }
 
 func main() {
-	// parse arguments
-	flag.Parse()
+	flag.Usage = func() {} // disable default usage message
+	flag.Parse()           // parse arguments
 	args := flag.Args()
+	logger := NewLogger(argVerbose)
 
 	// initialize config parser
-	configParser := NewConfigParser()
+	configParser, err := NewConfigParser(argConfigPath, argVerbose)
+	if err != nil {
+		logger.logDebug(err.Error())
+		return
+	}
+
+	logger.logDebug(fmt.Sprintf("Using config file: %s", configParser.configFile))
 
 	// run command looking at the first argument
 	switch parseCommand(args) {
@@ -92,12 +105,7 @@ func main() {
 		fmt.Println(generateHelpOutput(tasks, description, epilog))
 	case CommandVersion:
 		fmt.Println(getVersion())
+	default:
+		configParser.runTask(args)
 	}
-
-	// l := lua.NewState()
-	// lua.OpenLibraries(l)
-	//
-	//	if err := lua.DoFile(l, "hello.lua"); err != nil {
-	//		panic(err)
-	//	}
 }
