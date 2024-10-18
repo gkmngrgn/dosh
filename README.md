@@ -1,44 +1,13 @@
-# DOSH - shell-independent task manager (CLI)
+# DOSH - shell-independent task manager
 
-<img src="https://raw.githubusercontent.com/gkmngrgn/dosh-core/main/dosh-logo.svg"
+<img src="https://raw.githubusercontent.com/gkmngrgn/dosh/main/dosh-logo.svg"
 width="200"
 alt="DOSH logo" />
 
 ## INSTALLATION
 
-We have many ways to install DOSH CLI. You can prefer to install it using the Python package manager, or you can use the installer script for Linux and MacOS, or if you are a Windows user, you can download the Windows installer.
-
-Currently, our CircleCI builds app for these operating systems:
-
-- Linux (aarch64, x86_64)
-- MacOS (x86_64)
-- Windows (amd64)
-
-Also we build these targets manually:
-
-- MacOS (arm64) using `package.sh`
-- Windows Installer (amd64) using `package_for_windows.sh`
-
-### BASH (for Linux, MacOS)
-
 ```shell
-sh <(curl https://raw.githubusercontent.com/gkmngrgn/dosh-cli/main/install.sh)
-```
-
-### WINDOWS
-
-Download the installer (`dosh-cli-windows-amd64-VERSION-installer.zip`) from [GitHub Release](https://github.com/gkmngrgn/dosh-cli/releases/latest).
-
-### PYTHON
-
-```shell
-pip install --user dosh-cli
-```
-
-Or if you have `pipx`:
-
-```shell
-pipx install dosh-cli
+sh <(curl https://raw.githubusercontent.com/gkmngrgn/dosh/main/install.sh)
 ```
 
 ## ANATOMY OF `dosh.lua`
