@@ -40,5 +40,5 @@ func (l *Logger) logDebug(message string) {
 }
 
 func initLogger() {
-	log.SetFlags(log.Ldate | log.Ltime | log.Lshortfile)
+	log.SetFlags(log.Ldate | log.Ltime)
 }

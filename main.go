@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"strings"
 )
 
 var (
@@ -45,42 +44,6 @@ func parseCommand(args []string) Command {
 	}
 }
 
-func generateHelpOutput(tasks []Task, description string, epilog string) string {
-	helpOutput := []string{}
-
-	if description != "" {
-		helpOutput = append(helpOutput, description, "")
-	}
-
-	if len(tasks) > 0 {
-		helpOutput = append(helpOutput, "Tasks:")
-
-		for _, task := range tasks {
-			helpOutput = append(helpOutput, fmt.Sprintf("  > %-20s %s", task.Name, task.Description))
-		}
-
-		helpOutput = append(helpOutput, "")
-	}
-
-	helpOutput = append(helpOutput,
-		"DOSH commands:",
-		"  > help                 print this output",
-		"  > init                 initialize a new config in current working directory",
-		"  > version              print version of DOSH",
-		"",
-		"  -c string              specify config path (default: dosh.lua)",
-		"  -d string              change the working directory",
-		"  -v int                 increase the verbosity of messages:",
-		"                         1 - default, 2 - detailed, 3 - debug",
-	)
-
-	if epilog != "" {
-		helpOutput = append(helpOutput, "", epilog)
-	}
-
-	return strings.Join(helpOutput, "\n")
-}
-
 func main() {
 	flag.Usage = func() {} // disable default usage message
 	flag.Parse()           // parse arguments
@@ -94,18 +57,16 @@ func main() {
 		return
 	}
 
-	logger.logDebug(fmt.Sprintf("Using config file: %s", configParser.configFile))
-
 	// run command looking at the first argument
 	switch parseCommand(args) {
 	case CommandHelp:
-		tasks := configParser.getTasks()
-		description := configParser.getDescription()
-		epilog := configParser.getEpilog()
-		fmt.Println(generateHelpOutput(tasks, description, epilog))
+		fmt.Println(configParser.generateHelpOutput())
 	case CommandVersion:
 		fmt.Println(getVersion())
 	default:
-		configParser.runTask(args)
+		if err := configParser.runTask(args); err != nil {
+			fmt.Println(err)
+			fmt.Println("Run 'dosh help' for usage information")
+		}
 	}
 }
