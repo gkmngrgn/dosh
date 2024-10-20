@@ -176,22 +176,3 @@ Because there's `pyproject.toml` and I use `poetry`. The other reason is that I 
 ### WHY DOESN'T DOSH HAVE ANY REMOVE COMMAND?
 
 Because it's too dangerous! I don't use any remove command in my scripts indeed. If you really need a remove command, you can run it with `cmd.run`. But remember, contributors of this project don't guarantee anything.
-
-## CONTRIBUTION
-
-Install these development dependencies manually:
-
-- [poetry](https://python-poetry.org/)
-- [poethepoet](https://github.com/nat-n/poethepoet)
-- [poetry-dynamic-versioning](https://github.com/mtkennerly/poetry-dynamic-versioning)
-- [pre-commit](https://pre-commit.com/)
-
-```shell
-$ poetry poe --help
-[...]
-
-CONFIGURED TASKS
-  lint           Check code quality
-  test           Run tests
-    name         Filter tests by $name
-```
