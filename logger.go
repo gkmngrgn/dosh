@@ -2,23 +2,33 @@ package main
 
 import (
 	"log"
-	"os"
+	"sync"
+)
+
+var (
+	instance *Logger
+	once     sync.Once
 )
 
 type Logger struct {
 	verbose int
 }
 
-func NewLogger(verbose int) *Logger {
-	log.SetOutput(os.Stdout)
+func GetLogger() *Logger {
+	once.Do(func() {
+		log.SetFlags(log.Ldate | log.Ltime)
+		instance = &Logger{}
+	})
 
-	if verbose > 3 {
-		verbose = 0
+	return instance
+}
+
+func (l *Logger) setVerbosity(v int) {
+	if v > 3 {
+		v = 0
 	}
 
-	return &Logger{
-		verbose: verbose,
-	}
+	l.verbose = v
 }
 
 func (l *Logger) logDefault(message string) {
@@ -33,12 +43,8 @@ func (l *Logger) logDetailed(message string) {
 	}
 }
 
-func (l *Logger) logDebug(message string) {
+func (l *Logger) logError(message string) {
 	if l.verbose >= 3 {
 		log.Println(message)
 	}
-}
-
-func initLogger() {
-	log.SetFlags(log.Ldate | log.Ltime)
 }

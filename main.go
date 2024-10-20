@@ -13,8 +13,6 @@ var (
 func init() {
 	flag.StringVar(&argConfigPath, "c", ".", "Path to the configuration file")
 	flag.IntVar(&argVerbose, "v", 0, "Enable verbose output")
-
-	initLogger()
 }
 
 type Command int
@@ -47,13 +45,14 @@ func parseCommand(args []string) Command {
 func main() {
 	flag.Usage = func() {} // disable default usage message
 	flag.Parse()           // parse arguments
-	args := flag.Args()
-	logger := NewLogger(argVerbose)
+	args := flag.Args()    // get arguments
+	logger := GetLogger()  // set verbosity level
+	logger.setVerbosity(argVerbose)
 
 	// initialize config parser
-	configParser, err := NewConfigParser(argConfigPath, argVerbose)
+	configParser, err := NewConfigParser(argConfigPath)
 	if err != nil {
-		logger.logDebug(err.Error())
+		logger.logError(err.Error())
 		return
 	}
 
@@ -69,4 +68,6 @@ func main() {
 			fmt.Println("Run 'dosh help' for usage information")
 		}
 	}
+
+	configParser.close()
 }

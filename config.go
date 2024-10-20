@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"os"
-	"os/exec"
 	"path/filepath"
 	"strings"
 
@@ -13,29 +12,33 @@ import (
 type ConfigParser struct {
 	configFile string
 	tasks      []Task
+	luaState   *lua.LState
 	logger     *Logger
 }
 
-func NewConfigParser(configPath string, verboseLevel int) (*ConfigParser, error) {
+func NewConfigParser(configPath string) (*ConfigParser, error) {
 	configFile := filepath.Join(configPath, "dosh.lua")
-	logger := NewLogger(argVerbose)
+	logger := GetLogger()
 
 	L := lua.NewState()
-	defer L.Close()
 	L.PreloadModule("dosh_commands", DoshLuaLoader)
 	if err := L.DoFile(configFile); err != nil {
 		panic(err)
 	}
 
-	logger.logDebug(fmt.Sprintf("Using config file: %s", configFile))
-	return &ConfigParser{configFile: configFile, tasks: globalTasks, logger: logger}, nil
+	logger.logDefault(fmt.Sprintf("Using config file: %s", configFile))
+	return &ConfigParser{configFile: configFile, tasks: globalTasks, logger: logger, luaState: L}, nil
 }
 
-func (c *ConfigParser) getTasks() []Task {
-	return c.tasks
+func (cp *ConfigParser) close() {
+	defer cp.luaState.Close()
 }
 
-func (c *ConfigParser) getDescription() string {
+func (cp *ConfigParser) getTasks() []Task {
+	return cp.tasks
+}
+
+func (cp *ConfigParser) getDescription() string {
 	description := os.Getenv("HELP_DESCRIPTION")
 	if description == "" {
 		description = "dosh - shell-independent task manager"
@@ -43,21 +46,21 @@ func (c *ConfigParser) getDescription() string {
 	return description
 }
 
-func (c *ConfigParser) getEpilog() string {
+func (cp *ConfigParser) getEpilog() string {
 	return os.Getenv("HELP_EPILOG")
 }
 
-func (c *ConfigParser) runTask(args []string) error {
+func (cp *ConfigParser) runTask(args []string) error {
 	if len(args) == 0 {
 		return fmt.Errorf("no task specified")
 	}
 
 	taskName := args[0]
 
-	for _, task := range c.tasks {
+	for _, task := range cp.tasks {
 		if task.Name == taskName {
-			c.logger.logDebug("Running task: " + task.Name)
-			runCommand(task.Command)
+			cp.logger.logDefault("Running task: " + task.Name)
+			task.run(cp.luaState)
 			return nil
 		}
 	}
@@ -65,15 +68,15 @@ func (c *ConfigParser) runTask(args []string) error {
 	return fmt.Errorf("Task not found: %s", taskName)
 }
 
-func (c *ConfigParser) generateHelpOutput() string {
+func (cp *ConfigParser) generateHelpOutput() string {
 	helpOutput := []string{}
-	description := c.getDescription()
+	description := cp.getDescription()
 
 	if description != "" {
 		helpOutput = append(helpOutput, description, "")
 	}
 
-	tasks := c.getTasks()
+	tasks := cp.getTasks()
 	if len(tasks) > 0 {
 		helpOutput = append(helpOutput, "Tasks:")
 
@@ -96,20 +99,10 @@ func (c *ConfigParser) generateHelpOutput() string {
 		"                         1 - default, 2 - detailed, 3 - debug",
 	)
 
-	epilog := c.getEpilog()
+	epilog := cp.getEpilog()
 	if epilog != "" {
 		helpOutput = append(helpOutput, "", epilog)
 	}
 
 	return strings.Join(helpOutput, "\n")
-}
-
-func runCommand(s string) {
-	cmd := exec.Command("sh", "-c", s)
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	err := cmd.Run()
-	if err != nil {
-		fmt.Println(err)
-	}
 }
