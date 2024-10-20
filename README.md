@@ -1,4 +1,4 @@
-# DOSH - shell-independent task manager
+# \[IN PROGRESS\] DOSH - shell-independent task manager
 
 <img src="https://raw.githubusercontent.com/gkmngrgn/dosh/main/dosh-logo.svg"
 width="200"
