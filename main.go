@@ -55,12 +55,18 @@ func main() {
 	switch parseCommand(args) {
 	case CommandHelp:
 		fmt.Println(configParser.generateHelpOutput())
+	case CommandInit:
+		if err := configParser.init(); err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Initialized new DOSH configuration.")
+		}
 	case CommandVersion:
 		fmt.Println(getVersion())
 	default:
 		if err := configParser.runTask(args); err != nil {
 			fmt.Println(err)
-			fmt.Println("Run 'dosh help' for usage information")
+			fmt.Println("Run 'dosh help' for usage information.")
 		}
 	}
 
