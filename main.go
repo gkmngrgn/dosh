@@ -15,28 +15,23 @@ func init() {
 	flag.IntVar(&argVerbose, "v", 0, "Enable verbose output")
 }
 
-type Command int
+type Command string
 
 const (
-	CommandHelp Command = iota
-	CommandInit
-	CommandVersion
-	CommandUnknown
+	CommandHelp    Command = "help"
+	CommandInit    Command = "init"
+	CommandVersion Command = "version"
+	CommandUnknown Command = "unknown"
 )
 
 func parseCommand(args []string) Command {
 	if len(args) == 0 {
-		// No command provided, print help
 		return CommandHelp
 	}
 
-	switch args[0] {
-	case "help":
-		return CommandHelp
-	case "init":
-		return CommandInit
-	case "version":
-		return CommandVersion
+	switch Command(args[0]) {
+	case CommandHelp, CommandInit, CommandVersion:
+		return Command(args[0])
 	default:
 		return CommandUnknown
 	}
