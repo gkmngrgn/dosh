@@ -151,12 +151,9 @@ func (cp *ConfigParser) generateHelpOutput() string {
 }
 
 func fileExists(filename string) bool {
-	_, err := os.Stat(filename)
-	if err == nil {
-		return true
+	info, err := os.Stat(filename)
+	if err != nil {
+		return !os.IsNotExist(err)
 	}
-	if os.IsNotExist(err) {
-		return false
-	}
-	return false
+	return !info.IsDir()
 }
