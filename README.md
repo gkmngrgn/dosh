@@ -13,12 +13,13 @@ sh <(curl https://raw.githubusercontent.com/gkmngrgn/dosh/main/install.sh)
 ## ANATOMY OF `dosh.lua`
 
 ```lua
+local cmd = require("dosh_commands")          -- main module to run DOSH commands.
 local name = "there"                          -- you can use all features of Lua programming language.
 
 local function hello(there)                   -- even you can define your custom functions.
-there = there or name
-local message = "Hello, " .. there .. "!"
-cmd.run("osascript -e 'display notification \"" .. message .. "\" with title \"Hi!\"'")
+    there = there or name
+    local message = "Hello, " .. there .. "!"
+    cmd.run("osascript -e 'display notification \"" .. message .. "\" with title \"Hi!\"'")
 end
 
 cmd.add_task{                                 -- cmd comes from dosh.
@@ -48,8 +49,17 @@ Help outputs consist of four parts: **description**, **tasks**, **commands**, an
 
 If you want to edit the default description and add an epilog to the help output, you can modify these variables:
 
-- `env.HELP_DESCRIPTION`
-- `env.HELP_EPILOG`
+```lua
+local cmd = require("dosh_commands")
+
+cmd.set_env {
+  HELP_DESCRIPTION = "shell-independent task manager",
+  HELP_EPILOG = [[
+    Wikipedia says that an epilog is a piece of writing at the end of a work of
+    literature, usually used to bring closure to the work.
+  ]]
+}
+```
 
 ```
 $ dosh help

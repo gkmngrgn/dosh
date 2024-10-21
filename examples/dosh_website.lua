@@ -1,5 +1,7 @@
 -- this is how I deploy my hugo websites.
 
+local cmd = require("dosh_commands")
+
 local function check_commands (commands)
    for i = 1, #commands do
       if not cmd.exists_command(commands[i]) then

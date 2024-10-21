@@ -1,5 +1,7 @@
 -- limit command use by the environment and operating system
 
+local cmd = require("dosh_commands")
+
 cmd.add_task{
    name="train_data",
    description="train data in server",

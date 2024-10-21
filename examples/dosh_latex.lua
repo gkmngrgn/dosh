@@ -1,6 +1,8 @@
 -- all my cover letters, resumes, presentations are written in LaTeX.
 -- I use this script for generating PDF files.
 
+local cmd = require("dosh_commands")
+
 cmd.add_task{
    name="build",
    description="run formatter and generate pdf files",

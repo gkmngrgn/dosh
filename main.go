@@ -15,28 +15,23 @@ func init() {
 	flag.IntVar(&argVerbose, "v", 0, "Enable verbose output")
 }
 
-type Command int
+type Command string
 
 const (
-	CommandHelp Command = iota
-	CommandInit
-	CommandVersion
-	CommandUnknown
+	CommandHelp    Command = "help"
+	CommandInit    Command = "init"
+	CommandVersion Command = "version"
+	CommandUnknown Command = "unknown"
 )
 
 func parseCommand(args []string) Command {
 	if len(args) == 0 {
-		// No command provided, print help
 		return CommandHelp
 	}
 
-	switch args[0] {
-	case "help":
-		return CommandHelp
-	case "init":
-		return CommandInit
-	case "version":
-		return CommandVersion
+	switch Command(args[0]) {
+	case CommandHelp, CommandInit, CommandVersion:
+		return Command(args[0])
 	default:
 		return CommandUnknown
 	}
@@ -60,12 +55,18 @@ func main() {
 	switch parseCommand(args) {
 	case CommandHelp:
 		fmt.Println(configParser.generateHelpOutput())
+	case CommandInit:
+		if err := configParser.init(); err != nil {
+			fmt.Println(err)
+		} else {
+			fmt.Println("Initialized new DOSH configuration.")
+		}
 	case CommandVersion:
 		fmt.Println(getVersion())
 	default:
 		if err := configParser.runTask(args); err != nil {
 			fmt.Println(err)
-			fmt.Println("Run 'dosh help' for usage information")
+			fmt.Println("Run 'dosh help' for usage information.")
 		}
 	}
 

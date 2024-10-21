@@ -1,3 +1,5 @@
+local cmd = require("dosh_commands")
+
 -- say hello to anyone. it takes an argument.
 cmd.add_task{
    name="say_hello",
