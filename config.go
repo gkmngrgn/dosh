@@ -17,17 +17,25 @@ type ConfigParser struct {
 }
 
 func NewConfigParser(configPath string) (*ConfigParser, error) {
-	configFile := filepath.Join(configPath, "dosh.lua")
-	logger := GetLogger()
-
-	L := lua.NewState()
-	L.PreloadModule("dosh_commands", DoshLuaLoader)
-	if err := L.DoFile(configFile); err != nil {
-		panic(err)
+	configFile := configPath
+	if !strings.HasSuffix(configPath, ".lua") {
+		configFile = filepath.Join(configPath, "dosh.lua")
 	}
 
-	logger.logDefault(fmt.Sprintf("Using config file: %s", configFile))
-	return &ConfigParser{configFile: configFile, tasks: globalTasks, logger: logger, luaState: L}, nil
+	logger := GetLogger()
+	luaState := lua.NewState()
+	luaState.PreloadModule("dosh_commands", DoshLuaLoader)
+
+	if fileExists(configFile) {
+		logger.logDefault(fmt.Sprintf("Using config file: %s", configFile))
+		if err := luaState.DoFile(configFile); err != nil {
+			panic(err)
+		}
+	} else {
+		logger.logDefault(fmt.Sprintf("Config file not found, create a new one with `dosh init`: %s", configFile))
+	}
+
+	return &ConfigParser{configFile: configFile, tasks: globalTasks, logger: logger, luaState: luaState}, nil
 }
 
 func (cp *ConfigParser) close() {
@@ -105,4 +113,15 @@ func (cp *ConfigParser) generateHelpOutput() string {
 	}
 
 	return strings.Join(helpOutput, "\n")
+}
+
+func fileExists(filename string) bool {
+	_, err := os.Stat(filename)
+	if err == nil {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	return false
 }
