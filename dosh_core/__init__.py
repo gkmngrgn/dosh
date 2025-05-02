@@ -1,10 +1,7 @@
 """DOSH module."""
 
-import importlib.metadata
 from dataclasses import dataclass, field
 from pathlib import Path
-
-__version__ = importlib.metadata.version(__package__ or __name__)
 
 
 @dataclass
