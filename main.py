@@ -81,7 +81,7 @@ class ArgumentParser:
 
     def get_task_param(self, tasks: List[str]) -> Tuple[str, List[str]]:
         """Get task name with its parameters."""
-        tasks += list(PredefinedTask)
+        tasks += [task.value for task in PredefinedTask]
         task_index = self.__get_arg_index(*tasks)
         if task_index is None:
             return (PredefinedTask.HELP, [])
