@@ -15,16 +15,10 @@
 
 Install these development dependencies manually:
 
-- [poetry](https://python-poetry.org/)
-- [poethepoet](https://github.com/nat-n/poethepoet)
+- [uv](https://github.com/astral-sh/uv)
 - [pre-commit](https://pre-commit.com/)
 
 ```shell
-$ poetry poe --help
-[...]
-
-CONFIGURED TASKS
-  lint           Check code quality
-  test           Run tests
-    name         Filter tests by $name
+$ pre-commit run --all-files  # for linting
+$ uv run pytest  # for testing
 ```
