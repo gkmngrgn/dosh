@@ -115,7 +115,12 @@ def copy_tree(src: Path, dst: Path) -> None:
 
 def run_command_and_return_result(content: str, log_prefix: str = "") -> int:
     """Run external command and return result with the captured output."""
-    result = subprocess.run(content, shell=True)
+    # use cmd for windows.
+    if OperatingSystem.get_current() == OperatingSystem.WINDOWS:
+        result = subprocess.run(["cmd", "/c", *content.split()], shell=False)
+    else:
+        result = subprocess.run(content, shell=True)
+
     return_code = result.returncode
     logger.debug("%s Return code: %s".strip(), log_prefix, return_code)
     return return_code
