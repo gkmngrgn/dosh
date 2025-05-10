@@ -6,7 +6,7 @@ import getpass
 import os
 from typing import Final
 
-from dosh_core.commands.base import OperatingSystem
+from dosh.commands.base import OperatingSystem
 
 __all__ = ["ENVIRONMENTS"]
 

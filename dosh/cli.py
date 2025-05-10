@@ -1,23 +1,15 @@
 """DOSH CLI app."""
 
-import importlib.metadata
-
-try:
-    __version__ = importlib.metadata.version(__package__ or __name__)
-except importlib.metadata.PackageNotFoundError:
-    __version__ = "0.0.0"
-
-
 import sys
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Tuple
 
-from dosh_core import DoshInitializer
-from dosh_core.commands.internal import generate_help, init_config
-from dosh_core.config import ConfigParser
-from dosh_core.environments import ENVIRONMENTS
-from dosh_core.logger import get_logger, set_verbosity
+from dosh import DoshInitializer, __version__
+from dosh.commands.internal import generate_help, init_config
+from dosh.config import ConfigParser
+from dosh.environments import ENVIRONMENTS
+from dosh.logger import get_logger, set_verbosity
 
 logger = get_logger()
 
@@ -141,5 +133,11 @@ class CLI:  # pylint: disable=too-few-public-methods
             self.conf_parser.run_task(task_name, task_params)
 
 
+def main() -> None:
+    """Run the CLI."""
+    cli = CLI()
+    cli.run()
+
+
 if __name__ == "__main__":
-    CLI().run()
+    main()

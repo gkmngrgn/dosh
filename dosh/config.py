@@ -4,11 +4,11 @@ import shutil
 from dataclasses import fields
 from typing import Any, Dict, List
 
-from dosh_core.commands import COMMANDS
-from dosh_core.commands.base import OperatingSystem, Task
-from dosh_core.environments import DOSH_ENV, ENVIRONMENTS
-from dosh_core.logger import get_logger
-from dosh_core.lua_runtime import get_lua_environment
+from dosh.commands import COMMANDS
+from dosh.commands.base import OperatingSystem, Task
+from dosh.environments import DOSH_ENV, ENVIRONMENTS
+from dosh.logger import get_logger
+from dosh.lua_runtime import get_lua_environment
 
 logger = get_logger()
 

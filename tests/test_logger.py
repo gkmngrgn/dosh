@@ -1,6 +1,6 @@
 from logging import DEBUG, ERROR, INFO, WARNING
 
-from dosh_core.logger import get_logger, set_verbosity
+from dosh.logger import get_logger, set_verbosity
 
 
 def test_verbosity_level():

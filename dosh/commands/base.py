@@ -12,9 +12,9 @@ from pathlib import Path
 from typing import Any, Callable, Dict, List, TypeVar
 from urllib.parse import urlparse
 
-from dosh_core import DoshInitializer
-from dosh_core.logger import get_logger
-from dosh_core.lua_runtime import LuaFunction
+from dosh import DoshInitializer
+from dosh.logger import get_logger
+from dosh.lua_runtime import LuaFunction
 
 T = TypeVar("T")
 

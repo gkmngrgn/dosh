@@ -20,6 +20,9 @@ dependencies = [
     "lupa>=2.4",
 ]
 
+[project.scripts]
+dosh = "dosh.cli:main"
+
 [dependency-groups]
 dev = [
     "pytest>=8.3.5",

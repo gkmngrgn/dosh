@@ -1,11 +1,11 @@
 import subprocess
 import sys
 
-from main import __version__
+from dosh import __version__
 
 
 def test_version(capfd):
-    ret = subprocess.run([sys.executable, "-m", "main", "version"], text=True)
+    ret = subprocess.run([sys.executable, "-m", "dosh", "version"], text=True)
     assert ret.returncode == 0
 
     cap = capfd.readouterr()

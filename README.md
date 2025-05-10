@@ -219,4 +219,8 @@ Install these development dependencies manually:
 ```shell
 $ uvx pre-commit run --all-files  # for linting
 $ uv run pytest  # for testing
+$ uv build # for building
+$ uv pip install dist/dosh-*.whl  # for installing
+$ uv run dosh  # testing the installation
+$ uv run dosh/cli.py  # testing the cli without installing
 ```
