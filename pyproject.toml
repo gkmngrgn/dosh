@@ -20,12 +20,21 @@ dependencies = [
     "lupa>=2.4",
 ]
 
-[project.scripts]
-dosh = "dosh.cli:main"
-
 [dependency-groups]
 dev = [
     "pytest>=8.3.5",
     "pytest-cov>=6.1.1",
     "pytest-httpserver>=1.1.3",
 ]
+package = [
+    "pyinstaller>=6.13.0",
+]
+
+[project.scripts]
+dosh = "dosh.cli:main"
+
+[tool.uv]
+package = true
+
+[tool.setuptools]
+packages = ["dosh"]
