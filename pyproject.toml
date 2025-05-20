@@ -26,9 +26,6 @@ dev = [
     "pytest-cov>=6.1.1",
     "pytest-httpserver>=1.1.3",
 ]
-package = [
-    "pyinstaller>=6.13.0",
-]
 
 [project.scripts]
 dosh = "dosh.cli:main"
