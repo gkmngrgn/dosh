@@ -31,48 +31,48 @@ jobs:
         name: code-coverage-report
         path: tests/cov_html
 
-  build-on-linux:
-    needs: pre-checks
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  # build-on-linux:
+  #   needs: pre-checks
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Package DOSH CLI for Linux
-        run: ./package.sh
+  #     - name: Package DOSH CLI for Linux
+  #       run: ./package.sh
 
-      - name: Archive package
-        uses: actions/upload-artifact@v4
-        with:
-          name: dosh-cli-linux
-          path: dosh-cli-*
+  #     - name: Archive package
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: dosh-cli-linux
+  #         path: dosh-cli-*
 
-  build-on-macos:
-    needs: pre-checks
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
+  # build-on-macos:
+  #   needs: pre-checks
+  #   runs-on: macos-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Package DOSH CLI for MacOS
-        run: ./package.sh
+  #     - name: Package DOSH CLI for MacOS
+  #       run: ./package.sh
 
-      - name: Archive package
-        uses: actions/upload-artifact@v4
-        with:
-          name: dosh-cli-macos
-          path: dosh-cli-*
+  #     - name: Archive package
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: dosh-cli-macos
+  #         path: dosh-cli-*
 
-  build-on-windows:
-    needs: pre-checks
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
+  # build-on-windows:
+  #   needs: pre-checks
+  #   runs-on: windows-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - name: Package DOSH CLI for Windows
-        run: ./package.sh
-        shell: bash
+  #     - name: Package DOSH CLI for Windows
+  #       run: ./package.sh
+  #       shell: bash
 
-      - name: Archive package
-        uses: actions/upload-artifact@v4
-        with:
-          name: dosh-cli-windows
-          path: dosh-cli-*
+  #     - name: Archive package
+  #       uses: actions/upload-artifact@v4
+  #       with:
+  #         name: dosh-cli-windows
+  #         path: dosh-cli-*
