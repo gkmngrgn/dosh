@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 from typing import List, Optional
 
-from dosh_core.commands.base import (
+from dosh.commands.base import (
     CommandException,
     check_command,
     copy_tree,
@@ -16,8 +16,8 @@ from dosh_core.commands.base import (
     normalize_path,
     run_command_and_return_result,
 )
-from dosh_core.logger import get_logger
-from dosh_core.lua_runtime import LuaTable, lua_runtime
+from dosh.logger import get_logger
+from dosh.lua_runtime import LuaTable, lua_runtime
 
 logger = get_logger()
 
