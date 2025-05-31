@@ -8,7 +8,7 @@ import urllib.request
 from pathlib import Path
 from typing import List, Optional
 
-from dosh.commands.base import (
+from dosh.base_commands import (
     CommandException,
     check_command,
     copy_tree,

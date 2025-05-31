@@ -5,7 +5,7 @@ from dataclasses import fields
 from typing import Any, Dict, List
 
 from dosh.commands import COMMANDS
-from dosh.commands.base import OperatingSystem, Task
+from dosh.base_commands import OperatingSystem, Task
 from dosh.environments import DOSH_ENV, ENVIRONMENTS
 from dosh.logger import get_logger
 from dosh.lua_runtime import get_lua_environment

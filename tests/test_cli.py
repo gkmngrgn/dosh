@@ -6,7 +6,7 @@ from dosh import __version__
 
 
 def run_command(*params):
-    return subprocess.run([sys.executable, "-m", "dosh.cli", *params], text=True)
+    return subprocess.run([sys.executable, "-m", "dosh", *params], text=True)
 
 
 def test_version(capfd):

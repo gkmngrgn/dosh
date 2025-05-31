@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from dosh.commands import external as cmd
-from dosh.commands.base import CommandException, normalize_path
+from dosh import external_commands as cmd
+from dosh.base_commands import CommandException, normalize_path
 from dosh.logger import get_logger, set_verbosity
 
 logger = get_logger()

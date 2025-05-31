@@ -1,7 +1,7 @@
 import platform
 import textwrap
 
-from dosh.commands.base import OperatingSystem
+from dosh.base_commands import OperatingSystem
 from dosh.config import ConfigParser
 from dosh.logger import set_verbosity
 

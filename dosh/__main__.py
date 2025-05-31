@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import List, Optional, Tuple
 
 from dosh import DoshInitializer, __version__
-from dosh.commands.internal import generate_help, init_config
+from dosh.internal_commands import generate_help, init_config
 from dosh.config import ConfigParser
 from dosh.environments import ENVIRONMENTS
 from dosh.logger import get_logger, set_verbosity
@@ -133,11 +133,6 @@ class CLI:  # pylint: disable=too-few-public-methods
             self.conf_parser.run_task(task_name, task_params)
 
 
-def main() -> None:
-    """Run the CLI."""
+if __name__ == "__main__":
     cli = CLI()
     cli.run()
-
-
-if __name__ == "__main__":
-    main()

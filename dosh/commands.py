@@ -2,7 +2,7 @@
 
 from typing import Final
 
-from dosh.commands import external as cmd
+from dosh import external_commands as cmd
 from dosh.logger import get_logger
 
 __all__ = ["COMMANDS"]
