@@ -43,6 +43,8 @@ jobs:
 
       - name: Package DOSH CLI for Linux
         run: ./package.sh
+        env:
+          DOSH_BINARY_NAME: dosh-cli-linux
 
       - name: Archive package
         uses: actions/upload-artifact@v4
@@ -50,33 +52,45 @@ jobs:
           name: dosh-cli-linux
           path: bin
 
-  # build-on-macos:
-  #   needs: pre-checks
-  #   runs-on: macos-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
+  build-on-macos:
+    needs: pre-checks
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Package DOSH CLI for MacOS
-  #       run: ./package.sh
+      - uses: astral-sh/setup-uv@v6.0.1
+        with:
+          enable-cache: true
 
-  #     - name: Archive package
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: dosh-cli-macos
-  #         path: dosh-cli-*
+      - name: Package DOSH CLI for MacOS
+        run: ./package.sh
+        env:
+          DOSH_BINARY_NAME: dosh-cli-macos
 
-  # build-on-windows:
-  #   needs: pre-checks
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
+      - name: Archive package
+        uses: actions/upload-artifact@v4
+        with:
+          name: dosh-cli-macos
+          path: bin
 
-  #     - name: Package DOSH CLI for Windows
-  #       run: ./package.sh
-  #       shell: bash
+  build-on-windows:
+    needs: pre-checks
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
 
-  #     - name: Archive package
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: dosh-cli-windows
-  #         path: dosh-cli-*
+      - uses: astral-sh/setup-uv@v6.0.1
+        with:
+          enable-cache: true
+
+      - name: Package DOSH CLI for Windows
+        run: ./package.sh
+        shell: bash
+        env:
+          DOSH_BINARY_NAME: dosh-cli-windows
+
+      - name: Archive package
+        uses: actions/upload-artifact@v4
+        with:
+          name: dosh-cli-windows
+          path: bin
