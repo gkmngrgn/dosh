@@ -13,4 +13,5 @@ tar -xzf pyapp-source.tar.gz
 mv pyapp-v* pyapp-latest
 cd pyapp-latest
 cargo build --release
-mv target/release/pyapp dosh-cli-linux && chmod +x dosh-cli-linux
+mkdir -p ../bin
+mv target/release/pyapp ../bin/dosh-cli-linux && chmod +x ../bin/dosh-cli-linux
