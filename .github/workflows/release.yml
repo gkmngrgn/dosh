@@ -1,39 +1,64 @@
-name: DOSH CLI Package
+name: DOSH Release
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    tags:
+      - "v*"
 
 permissions:
   contents: read
 
 jobs:
-  pre-checks:
+  build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - uses: astral-sh/setup-uv@v6.0.1
-      with:
-        enable-cache: true
+      - uses: astral-sh/setup-uv@v6.0.1
+        with:
+          enable-cache: true
 
-    - name: Pre-commit
-      run: uvx pre-commit run --all-files
+      - name: Build release distributions
+        run: uv build
 
-    - name: Run tests
-      run: uv run pytest --cov=. --cov-report term-missing --cov-report html:./tests/cov_html
+      - name: Upload distributions
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
 
-    - name: Archive code coverage results
-      uses: actions/upload-artifact@v4
-      with:
-        name: code-coverage-report
-        path: tests/cov_html
+  pypi-publish:
+    runs-on: ubuntu-latest
+
+    needs:
+      - build
+
+    permissions:
+      id-token: write
+
+    environment:
+      name: release
+      url: https://pypi.org/p/dosh-cli
+
+    steps:
+      - name: Retrieve release distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
+
+      - name: Publish release distributions to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist/
 
   build-on-linux:
-    needs: pre-checks
     runs-on: ubuntu-latest
+
+    needs:
+      - pypi-publish
+
     steps:
       - uses: actions/checkout@v4
 
@@ -53,8 +78,11 @@ jobs:
           path: bin
 
   build-on-macos:
-    needs: pre-checks
     runs-on: macos-latest
+
+    needs:
+      - pypi-publish
+
     steps:
       - uses: actions/checkout@v4
 
@@ -74,8 +102,11 @@ jobs:
           path: bin
 
   build-on-windows:
-    needs: pre-checks
     runs-on: windows-latest
+
+    needs:
+      - pypi-publish
+
     steps:
       - uses: actions/checkout@v4
 
