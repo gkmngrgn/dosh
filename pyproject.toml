@@ -1,6 +1,6 @@
 [project]
 name = "dosh"
-version = "0.2.0"
+version = "0.2.1"
 description = "Shell-independent task management CLI."
 readme = "README.md"
 license = "MIT"
