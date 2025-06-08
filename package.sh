@@ -3,9 +3,6 @@
 # Set output binary name (can be overridden by command line argument or environment variable)
 OUTPUT_BINARY="${DOSH_BINARY_NAME:-dosh}"
 
-# build project first
-uv build
-
 # find wheel path in dist folder, set the name and path
 export PYAPP_PROJECT_NAME="dosh"
 export PYAPP_PROJECT_PATH="$(find $(pwd)/dist -name "dosh*.whl" -type f | head -1)"
