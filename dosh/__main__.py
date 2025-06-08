@@ -133,6 +133,11 @@ class CLI:  # pylint: disable=too-few-public-methods
             self.conf_parser.run_task(task_name, task_params)
 
 
+def cli() -> None:
+    """Entry point for the DOSH CLI."""
+    cli_instance = CLI()
+    cli_instance.run()
+
+
 if __name__ == "__main__":
-    cli = CLI()
-    cli.run()
+    cli()

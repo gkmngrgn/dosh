@@ -28,7 +28,7 @@ dev = [
 ]
 
 [project.scripts]
-cowsay = "dosh.__main__:cli"
+dosh = "dosh.__main__:cli"
 
 [tool.uv]
 package = true
