@@ -1,0 +1,43 @@
+name: "Package DOSH"
+description: "Package DOSH binary using PyApp for different platforms"
+inputs:
+  dosh-binary-name:
+    description: "Name for the output binary"
+    required: true
+  dist-path:
+    description: "Path to the distribution files"
+    required: false
+  output-path:
+    description: "Path for the output binary"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup UV
+      uses: astral-sh/setup-uv@v6.0.1
+      with:
+        enable-cache: true
+
+    - name: Package DOSH
+      shell: bash
+      run: |
+        export PYAPP_PROJECT_NAME="dosh"
+        export PYAPP_PROJECT_PATH="$(find $(pwd)/${{ inputs.dist-path }} -name "dosh*.whl" -type f | head -1)"
+
+        echo "Packaging DOSH binary: ${{ inputs.dosh-binary-name }}"
+        echo "Using wheel: ${PYAPP_PROJECT_PATH}"
+
+        # download pyapp source code, build it
+        curl https://github.com/ofek/pyapp/releases/latest/download/source.tar.gz -Lo pyapp-source.tar.gz
+        tar -xzf pyapp-source.tar.gz
+        mv pyapp-v* pyapp-latest
+        cd pyapp-latest
+        cargo build --release
+
+        # and rename the binary
+        mkdir -p ../${{ inputs.output-path }}
+        mv target/release/pyapp "../${{ inputs.output-path }}/${{ inputs.dosh-binary-name }}"
+        chmod +x "../${{ inputs.output-path }}/${{ inputs.dosh-binary-name }}"
+
+        echo "Binary packaged successfully at ${{ inputs.output-path }}/${{ inputs.dosh-binary-name }}"

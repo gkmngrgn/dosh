@@ -1,0 +1,31 @@
+name: DOSH Development
+
+on:
+  push:
+    branches: [ "main" ]
+
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  pre-checks:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v6.0.1
+        with:
+          enable-cache: true
+
+      - name: Run tests
+        run: uv run pytest --cov=. --cov-report term-missing --cov-report html:./tests/cov_html
+
+      - name: Archive code coverage results
+        uses: actions/upload-artifact@v4
+        with:
+          name: code-coverage-report
+          path: tests/cov_html
