@@ -1,5 +1,5 @@
 [project]
-name = "dosh-cli"
+name = "dosh"
 version = "0.2.0"
 description = "Shell-independent task management CLI."
 readme = "README.md"

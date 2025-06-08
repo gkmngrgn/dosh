@@ -28,34 +28,54 @@ jobs:
           name: release-dists
           path: dist/
 
-  package-on-linux:
-    runs-on: ubuntu-latest
+  package-on-linux-arm64:
+    runs-on: ubuntu-24.04-arm
 
     needs:
       - build
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Retrieve release distributions
         uses: actions/download-artifact@v4
         with:
           name: release-dists
           path: dist/
 
-      - uses: astral-sh/setup-uv@v6.0.1
+      - uses: ./actions/package-dosh
         with:
-          enable-cache: true
-
-      - name: Package DOSH for Linux
-        run: ./package.sh
-        env:
-          DOSH_BINARY_NAME: dosh-linux
+          dosh-binary-name: dosh-linux-arm64
+          dist-path: dist
+          output-path: bin
 
       - name: Archive package
         uses: actions/upload-artifact@v4
         with:
-          name: dosh-linux
+          name: dosh-linux-arm64
+          path: bin
+
+  package-on-linux-x86_64:
+    runs-on: ubuntu-latest
+
+    needs:
+      - build
+
+    steps:
+      - name: Retrieve release distributions
+        uses: actions/download-artifact@v4
+        with:
+          name: release-dists
+          path: dist/
+
+      - uses: ./actions/package-dosh
+        with:
+          dosh-binary-name: dosh-linux-x86_64
+          dist-path: dist
+          output-path: bin
+
+      - name: Archive package
+        uses: actions/upload-artifact@v4
+        with:
+          name: dosh-linux-x86_64
           path: bin
 
   package-on-macos:
@@ -65,22 +85,17 @@ jobs:
       - build
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Retrieve release distributions
         uses: actions/download-artifact@v4
         with:
           name: release-dists
           path: dist/
 
-      - uses: astral-sh/setup-uv@v6.0.1
+      - uses: ./actions/package-dosh
         with:
-          enable-cache: true
-
-      - name: Package DOSH for MacOS
-        run: ./package.sh
-        env:
-          DOSH_BINARY_NAME: dosh-macos
+          dosh-binary-name: dosh-macos
+          dist-path: dist
+          output-path: bin
 
       - name: Archive package
         uses: actions/upload-artifact@v4
@@ -95,61 +110,31 @@ jobs:
       - build
 
     steps:
-      - uses: actions/checkout@v4
-
       - name: Retrieve release distributions
         uses: actions/download-artifact@v4
         with:
           name: release-dists
           path: dist/
 
-      - uses: astral-sh/setup-uv@v6.0.1
+      - uses: ./actions/package-dosh
         with:
-          enable-cache: true
-
-      - name: Package DOSH for Windows
-        run: ./package.sh
-        shell: bash
-        env:
-          DOSH_BINARY_NAME: dosh-windows
+          dosh-binary-name: dosh-windows-x86_64
+          dist-path: dist
+          output-path: bin
 
       - name: Archive package
         uses: actions/upload-artifact@v4
         with:
-          name: dosh-windows
+          name: dosh-windows-x86_64
           path: bin
-
-  pypi-publish:
-    runs-on: ubuntu-latest
-
-    needs:
-      - build
-
-    permissions:
-      id-token: write
-
-    environment:
-      name: release
-      url: https://pypi.org/p/dosh-cli
-
-    steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
-
-      - name: Publish release distributions to PyPI
-        uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          packages-dir: dist/
 
   release:
     runs-on: ubuntu-latest
 
     needs:
       - build
-      - package-on-linux
+      - package-on-linux-arm64
+      - package-on-linux-x86_64
       - package-on-macos
       - package-on-windows
 
