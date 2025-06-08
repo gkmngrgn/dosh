@@ -14,6 +14,12 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Retrieve release distributions
+      uses: actions/download-artifact@v4
+      with:
+        name: release-dists
+        path: ${{ inputs.dist-path }}
+
     - name: Setup UV
       uses: astral-sh/setup-uv@v6.0.1
       with:
@@ -41,3 +47,9 @@ runs:
         chmod +x "../${{ inputs.output-path }}/${{ inputs.dosh-binary-name }}"
 
         echo "Binary packaged successfully at ${{ inputs.output-path }}/${{ inputs.dosh-binary-name }}"
+
+    - name: Archive package
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.dosh-binary-name }}
+        path: ${{ inputs.output-path }}

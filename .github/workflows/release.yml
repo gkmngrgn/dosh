@@ -35,23 +35,13 @@ jobs:
       - build
 
     steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
+      - uses: actions/checkout@v4
 
       - uses: ./actions/package-dosh
         with:
           dosh-binary-name: dosh-linux-arm64
           dist-path: dist
           output-path: bin
-
-      - name: Archive package
-        uses: actions/upload-artifact@v4
-        with:
-          name: dosh-linux-arm64
-          path: bin
 
   package-on-linux-x86_64:
     runs-on: ubuntu-latest
@@ -60,23 +50,13 @@ jobs:
       - build
 
     steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
+      - uses: actions/checkout@v4
 
       - uses: ./actions/package-dosh
         with:
           dosh-binary-name: dosh-linux-x86_64
           dist-path: dist
           output-path: bin
-
-      - name: Archive package
-        uses: actions/upload-artifact@v4
-        with:
-          name: dosh-linux-x86_64
-          path: bin
 
   package-on-macos:
     runs-on: macos-latest
@@ -85,23 +65,13 @@ jobs:
       - build
 
     steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
+      - uses: actions/checkout@v4
 
       - uses: ./actions/package-dosh
         with:
-          dosh-binary-name: dosh-macos
+          dosh-binary-name: dosh-macos-x86_64
           dist-path: dist
           output-path: bin
-
-      - name: Archive package
-        uses: actions/upload-artifact@v4
-        with:
-          name: dosh-macos
-          path: bin
 
   package-on-windows:
     runs-on: windows-latest
@@ -110,23 +80,13 @@ jobs:
       - build
 
     steps:
-      - name: Retrieve release distributions
-        uses: actions/download-artifact@v4
-        with:
-          name: release-dists
-          path: dist/
+      - uses: actions/checkout@v4
 
       - uses: ./actions/package-dosh
         with:
           dosh-binary-name: dosh-windows-x86_64
           dist-path: dist
           output-path: bin
-
-      - name: Archive package
-        uses: actions/upload-artifact@v4
-        with:
-          name: dosh-windows-x86_64
-          path: bin
 
   release:
     runs-on: ubuntu-latest
