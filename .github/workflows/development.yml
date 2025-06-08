@@ -22,7 +22,7 @@ jobs:
           enable-cache: true
 
       - name: Pre-commit
-        run: uvx pre-commit run --all-files
+        run: uvx pre-commit
 
       - name: Run tests
         run: uv run pytest --cov=. --cov-report term-missing --cov-report html:./tests/cov_html
