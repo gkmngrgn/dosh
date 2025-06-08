@@ -69,7 +69,7 @@ jobs:
 
       - uses: ./.github/actions/package-dosh
         with:
-          dosh-binary-name: dosh-macos-x86_64
+          dosh-binary-name: dosh-macos-arm64
           dist-path: dist
           output-path: bin
 
