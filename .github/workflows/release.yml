@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./actions/package-dosh
+      - uses: ./.github/actions/package-dosh
         with:
           dosh-binary-name: dosh-linux-arm64
           dist-path: dist
@@ -52,7 +52,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./actions/package-dosh
+      - uses: ./.github/actions/package-dosh
         with:
           dosh-binary-name: dosh-linux-x86_64
           dist-path: dist
@@ -67,7 +67,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./actions/package-dosh
+      - uses: ./.github/actions/package-dosh
         with:
           dosh-binary-name: dosh-macos-x86_64
           dist-path: dist
@@ -82,7 +82,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: ./actions/package-dosh
+      - uses: ./.github/actions/package-dosh
         with:
           dosh-binary-name: dosh-windows-x86_64
           dist-path: dist
