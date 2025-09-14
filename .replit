@@ -4,3 +4,30 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "DOSH CLI"
+
+[[workflows.workflow]]
+name = "DOSH CLI"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "source .pythonlibs/bin/activate && python -m dosh help"
+
+[workflows.workflow.metadata]
+outputType = "console"
+
+[deployment]
+deploymentTarget = "vm"
+run = ["bash", "-c", "source .pythonlibs/bin/activate && python -m dosh help && echo 'DOSH CLI is ready. Use: python -m dosh <command>' && tail -f /dev/null"]
