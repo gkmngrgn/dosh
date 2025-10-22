@@ -4,7 +4,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import importlib.metadata
 
-__version__ = importlib.metadata.version('dosh_cli')
+__version__ = importlib.metadata.version("dosh_cli")
 
 
 @dataclass
