@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   build:
@@ -100,7 +99,8 @@ jobs:
       - package-on-windows
 
     permissions:
-      contents: write
+      contents: read
+      id-token: write
 
     steps:
       - name: Retrieve packages and distributions
