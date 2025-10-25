@@ -1,7 +1,6 @@
 name: DOSH Release
 
 on:
-  workflow_dispatch:
   push:
     tags:
       - "v*"
