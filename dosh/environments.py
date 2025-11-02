@@ -14,7 +14,7 @@ __all__ = ["ENVIRONMENTS"]
 
 def detect_shell_or_provide_default() -> str:
     try:
-        return detect_shell()[0]
+        return detect_shell()[0]  # type: ignore
     except ShellDetectionFailure:
         pass
 
