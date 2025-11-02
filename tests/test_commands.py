@@ -43,6 +43,13 @@ def test_copy(tmp_path):
     assert (tmp_path / "dst2" / "foo" / "bar" / "baz" / "hell.txt").exists()
 
 
+def test_echo(capsys):
+    """Test echo command."""
+    cmd.echo("Hello, world!")
+    captured = capsys.readouterr()
+    assert captured.out == "Hello, world!\n"
+
+
 def test_run(caplog):
     set_verbosity(3)
     result = cmd.run("echo Hello!")

@@ -15,6 +15,7 @@ COMMANDS: Final = {
     "clone": cmd.clone,
     "ls": cmd.scan_directory,
     "run": cmd.run,
+    "echo": cmd.echo,
     "run_url": cmd.run_url,
     # package managers
     "apt_install": cmd.apt_install,

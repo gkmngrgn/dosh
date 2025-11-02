@@ -137,6 +137,11 @@ def run(command: str) -> int:
     return run_command_and_return_result(command, log_prefix)
 
 
+def echo(message: str) -> None:
+    """Print a message to the console."""
+    print(message)
+
+
 def run_url(url: str) -> int:
     """Run a remote shell script directly."""
     if not is_url_valid(url):
