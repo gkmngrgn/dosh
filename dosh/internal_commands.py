@@ -17,6 +17,7 @@ def init_config(config_path: Path) -> None:
             "The file `%s` already exists in current working directory.",
             config_path.name,
         )
+        return
 
     content = textwrap.dedent(
         """\
@@ -30,8 +31,7 @@ def init_config(config_path: Path) -> None:
 
                 -- from macos notification
                 if env.IS_MACOS then
-                    cmd.run("osascript -e 'display notification \"" .. message .. "\" with title \"Hi!\"'")
-                    cmd.run("echo '" .. message .. "'")
+                    cmd.run("osascript -e 'display notification \\"" .. message .. "\\" with title \\"Hi!\\"'")
                 end
             end
 
