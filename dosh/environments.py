@@ -4,24 +4,43 @@ from __future__ import annotations
 
 import getpass
 import os
-from typing import Final
+from shellingham import detect_shell, ShellDetectionFailure
+from typing import Any, Final
 
 from dosh.base_commands import OperatingSystem
 
 __all__ = ["ENVIRONMENTS"]
 
-SHELL: Final = os.getenv("SHELL") or ""
-CURRENT_OS: Final = OperatingSystem.get_current()
-DOSH_ENV: Final = os.getenv("DOSH_ENV") or ""
-ENVIRONMENTS: Final = {
+
+def detect_shell_or_provide_default() -> str:
+    try:
+        return detect_shell()[0]
+    except ShellDetectionFailure:
+        pass
+
+    match os.name:
+        case 'posix':
+            env_key = "SHELL"
+        case 'nt':
+            env_key = "COMSPEC"
+        case _:
+            return ""
+ 
+    return os.getenv(env_key) or ""
+
+
+SHELL: Final[str] = detect_shell_or_provide_default()
+CURRENT_OS: Final[OperatingSystem] = OperatingSystem.get_current()
+DOSH_ENV: Final[str] = os.getenv("DOSH_ENV") or ""
+ENVIRONMENTS: Final[dict[str, Any]] = {
     "USER": getpass.getuser(),
     "HELP_DESCRIPTION": "dosh - shell-independent task manager",
     "HELP_EPILOG": "",
     "DOSH_ENV": DOSH_ENV,
     # shell type
-    "IS_ZSH": SHELL.endswith("zsh"),
-    "IS_BASH": SHELL.endswith("bash"),
-    "IS_PWSH": SHELL.endswith("pwsh"),
+    "IS_ZSH": SHELL == "zsh",
+    "IS_BASH": SHELL == "bash",
+    "IS_PWSH": SHELL == "powershell",
     # os type
     "IS_MACOS": CURRENT_OS == OperatingSystem.MACOS,
     "IS_LINUX": CURRENT_OS == OperatingSystem.LINUX,

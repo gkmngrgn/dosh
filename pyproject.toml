@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
     "colorlog>=6.9.0",
     "lupa>=2.4",
+    "shellingham>=1.5.4",
 ]
 
 [dependency-groups]
