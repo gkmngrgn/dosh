@@ -30,9 +30,9 @@ iwr https://raw.githubusercontent.com/gkmngrgn/dosh/main/install.ps1 -useb | iex
 local name = "there"                          -- you can use all features of Lua programming language.
 
 local function hello(there)                   -- even you can define your custom functions.
-there = there or name
-local message = "Hello, " .. there .. "!"
-cmd.run("osascript -e 'display notification \"" .. message .. "\" with title \"Hi!\"'")
+    there = there or name
+    local message = "Hello, " .. there .. "!"
+    cmd.run("osascript -e 'display notification \"" .. message .. "\" with title \"Hi!\"'")
 end
 
 cmd.add_task{                                 -- cmd comes from dosh.
