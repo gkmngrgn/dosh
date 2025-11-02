@@ -19,13 +19,13 @@ def detect_shell_or_provide_default() -> str:
         pass
 
     match os.name:
-        case 'posix':
+        case "posix":
             env_key = "SHELL"
-        case 'nt':
+        case "nt":
             env_key = "COMSPEC"
         case _:
             return ""
- 
+
     return os.getenv(env_key) or ""
 
 
