@@ -45,7 +45,7 @@ fi
 mv "$temp_dir/dosh" "$bin_file"
 chmod +x "$bin_file"
 
-if ! echo "$PATH" | grep -q "$install_dir"; then
+if ! echo ":$PATH:" | grep -q ":$install_dir:"; then
     printf "\n\033[1;33mWARNING: '%s' is not in your PATH.\033[0m" "$install_dir"
     printf "\n\033[1;33mYou should add the following line to your shell configuration file (e.g., ~/.bashrc, ~/.zshrc):\033[0m\n"
     printf '\n\033[1;33m  export PATH="%s:$PATH"\033[0m\n' "$install_dir"
