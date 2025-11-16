@@ -9,16 +9,16 @@
 Our GitHub Actions workflow builds app for these operating systems:
 
 - Linux (aarch64, x86_64)
-- MacOS (x86_64)
+- MacOS (arm64)
 - Windows (amd64)
 
-### BASH (for Linux, MacOS)
+### For Linux and MacOS
 
 ```shell
-sh <(curl https://raw.githubusercontent.com/gkmngrgn/dosh/main/install.sh)
+sh <(curl https://raw.githubusercontent.com/gkmngrgn/dosh/main/install.sh) --install-dir $HOME/.local/bin
 ```
 
-### POWERSHELL (for Windows)
+### For Windows (PowerShell)
 
 ```powershell
 iwr https://raw.githubusercontent.com/gkmngrgn/dosh/main/install.ps1 -useb | iex
