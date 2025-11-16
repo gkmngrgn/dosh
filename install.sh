@@ -11,11 +11,11 @@ while [ $# -gt 0 ]; do
       install_dir="$2"
       shift # past argument
       shift # past value
-      ;; 
+      ;;
     *)
       # unknown option
       shift # past argument
-      ;; 
+      ;;
   esac
 done
 
