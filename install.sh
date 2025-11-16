@@ -8,6 +8,10 @@ install_dir="$HOME/.local/bin"
 while [ $# -gt 0 ]; do
   case "$1" in
     --install-dir)
+      if [ -z "$2" ]; then
+        echo "Error: --install-dir requires a value" >&2
+        exit 1
+      fi
       install_dir="$2"
       shift # past argument
       shift # past value
