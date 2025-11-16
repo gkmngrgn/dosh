@@ -1,31 +1,55 @@
 #!/bin/sh
 set -e
 
+# Default installation directory
+install_dir="$HOME/.local/bin"
+
+# Parse command-line arguments
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --install-dir)
+      install_dir="$2"
+      shift # past argument
+      shift # past value
+      ;; 
+    *)
+      # unknown option
+      shift # past argument
+      ;; 
+  esac
+done
+
 os=$(uname -s | tr '[:upper:]' '[:lower:]')
 architecture=$(uname -m)
 download_url="https://github.com/gkmngrgn/dosh/releases/latest/download/dosh-$os-$architecture"
 temp_dir=$(mktemp -d)
-local_dir="$HOME/.local"
-bin_file="$local_dir/bin/dosh"
+bin_file="$install_dir/dosh"
 
 echo "Operating System: $os"
 echo "Architecture: $architecture"
 echo "Temporary directory: $temp_dir"
 echo "Download URL: $download_url"
+echo "Installation directory: $install_dir"
 
 printf "\nSTEP 1: Downloading DOSH...\n"
 curl -L "$download_url" -o "$temp_dir/dosh"
 
-printf "\nSTEP 2: Installing DOSH CLI...\n"
+printf "\nSTEP 2: Installing DOSH CLI to %s...\n" "$bin_file"
 if [ -f "$bin_file" ]; then
     mv "$bin_file" "$temp_dir/dosh.old"
 else
     # make sure if local bin folder exists
-    mkdir -p "$local_dir/bin"
+    mkdir -p "$install_dir"
 fi
 
 mv "$temp_dir/dosh" "$bin_file"
 chmod +x "$bin_file"
+
+if ! echo "$PATH" | grep -q "$install_dir"; then
+    printf "\n\033[1;33mWARNING: '%s' is not in your PATH.\033[0m" "$install_dir"
+    printf "\n\033[1;33mYou should add the following line to your shell configuration file (e.g., ~/.bashrc, ~/.zshrc):\033[0m\n"
+    printf '\n\033[1;33m  export PATH="%s:$PATH"\033[0m\n' "$install_dir"
+fi
 
 printf "\nSTEP 3: Done! You can delete the temporary directory if you want:"
 printf "\n%s\n" "$temp_dir"
