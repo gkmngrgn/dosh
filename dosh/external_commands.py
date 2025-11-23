@@ -6,7 +6,7 @@ import os
 import shutil
 import urllib.request
 from pathlib import Path
-from typing import List, Optional, Any, Generator
+from typing import List, Optional
 
 from dosh.base_commands import (
     CommandException,
