@@ -52,10 +52,20 @@ def test_echo(capsys):
 
 def test_run(caplog):
     set_verbosity(3)
-    result = cmd.run("echo Hello!")
-    assert result == 0
+    results = cmd.run("echo Hello!")
+    assert results == [0]
     assert caplog.records[0].message == "[RUN] echo Hello!"
     assert caplog.records[1].message == "[RUN] Return code: 0"
+
+
+def test_multiple_run(caplog):
+    set_verbosity(3)
+    results = cmd.run("echo Hello!", "echo World!")
+    assert results == [0, 0]
+    assert caplog.records[0].message == "[RUN] echo Hello!"
+    assert caplog.records[1].message == "[RUN] Return code: 0"
+    assert caplog.records[2].message == "[RUN] echo World!"
+    assert caplog.records[3].message == "[RUN] Return code: 0"
 
 
 def test_run_url(httpserver, caplog):

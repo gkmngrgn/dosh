@@ -6,7 +6,7 @@ import os
 import shutil
 import urllib.request
 from pathlib import Path
-from typing import List, Optional
+from typing import List, Optional, Any, Generator
 
 from dosh.base_commands import (
     CommandException,
@@ -130,11 +130,17 @@ def scan_directory(parent_dir: str = ".", opts: Optional[LuaTable] = None) -> Lu
     return response
 
 
-def run(command: str) -> int:
+def run(*commands: str) -> list[int]:
     """Run a shell command using subprocess."""
     log_prefix = "[RUN]"
-    logger.info("%s %s", log_prefix, command)
-    return run_command_and_return_result(command, log_prefix)
+    results = []
+
+    for command in commands:
+        logger.info("%s %s", log_prefix, command)
+        result = run_command_and_return_result(command, log_prefix)
+        results.append(result)
+
+    return results
 
 
 def echo(message: str) -> None:
