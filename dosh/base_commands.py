@@ -38,16 +38,15 @@ class OperatingSystem(str, Enum):
         """Get current operating system."""
         os_type = platform.system().lower()
 
-        if os_type == "darwin":
-            return cls.MACOS
-
-        if os_type == "linux":
-            return cls.LINUX
-
-        if os_type == "windows":
-            return cls.WINDOWS
-
-        return cls.UNSUPPORTED
+        match os_type:
+            case "darwin":
+                return cls.MACOS
+            case "linux":
+                return cls.LINUX
+            case "windows":
+                return cls.WINDOWS
+            case _:
+                return cls.UNSUPPORTED
 
 
 CommandCallable = Callable[..., Any]
