@@ -112,20 +112,28 @@ def copy_tree(src: Path, dst: Path) -> None:
         shutil.copy(src, dst)
 
 
-def run_command_and_return_result(content: str, log_prefix: str = "") -> int:
+def run_command_and_return_result(
+    content: str,
+    log_prefix: str = "",
+    current_working_dir: Path | None = None,
+) -> int:
     """Run external command and return result with the captured output."""
     # use powershell for windows.
     if OperatingSystem.get_current() == OperatingSystem.WINDOWS:
+        shell_enabled = False
+
         # Prefer pwsh (PowerShell Core), fallback to powershell (Windows PowerShell)
         pwsh_exe = shutil.which("pwsh") or shutil.which("powershell")
         if pwsh_exe:
-            result = subprocess.run([pwsh_exe, "-Command", content], shell=False)
+            command = [pwsh_exe, "-Command", content]
         else:
             # Fallback to cmd if PowerShell is not available
-            result = subprocess.run(["cmd", "/c", *content.split()], shell=False)
+            command = ["cmd", "/c", *content.split()]
     else:
-        result = subprocess.run(content, shell=True)
+        shell_enabled = True
+        command = content.split()
 
+    result = subprocess.run(command, shell=shell_enabled, cwd=current_working_dir)
     return_code = result.returncode
     logger.debug("%s Return code: %s".strip(), log_prefix, return_code)
     return return_code

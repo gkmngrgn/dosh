@@ -133,11 +133,22 @@ def scan_directory(parent_dir: str = ".", opts: Optional[LuaTable] = None) -> Lu
 def run(*commands: str) -> list[int]:
     """Run a shell command using subprocess."""
     log_prefix = "[RUN]"
+    current_working_dir = Path.cwd()
     results = []
 
     for command in commands:
+        if command.lstrip().startswith("cd "):
+            current_working_dir /= command[3:].strip()
+            logger.info(
+                "%s Current working directory changed to %s",
+                log_prefix,
+                current_working_dir.resolve(),
+            )
+            results.append(0)
+            continue
+
         logger.info("%s %s", log_prefix, command)
-        result = run_command_and_return_result(command, log_prefix)
+        result = run_command_and_return_result(command, log_prefix, current_working_dir)
         results.append(result)
 
     return results

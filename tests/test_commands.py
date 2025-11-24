@@ -68,6 +68,32 @@ def test_multiple_run(caplog):
     assert caplog.records[3].message == "[RUN] Return code: 0"
 
 
+def test_multiple_run_with_cwd(caplog):
+    set_verbosity(3)
+    results = cmd.run(
+        "ls dist",
+        "cd dist",
+        "ls",
+        "cd ..",
+        "ls",
+    )
+    assert results == [0, 0, 0, 0, 0]
+    assert caplog.records[0].message == "[RUN] ls dist"
+    assert caplog.records[1].message == "[RUN] Return code: 0"
+    assert caplog.records[2].message.startswith(
+        "[RUN] Current working directory changed to"
+    )
+    assert Path(caplog.records[2].message.rsplit(" ", 1)[-1]).stem == "dist"
+    assert caplog.records[3].message == "[RUN] ls"
+    assert caplog.records[4].message == "[RUN] Return code: 0"
+    assert caplog.records[5].message.startswith(
+        "[RUN] Current working directory changed to"
+    )
+    assert Path(caplog.records[5].message.rsplit(" ", 1)[-1]).stem == "dosh"
+    assert caplog.records[6].message == "[RUN] ls"
+    assert caplog.records[7].message == "[RUN] Return code: 0"
+
+
 def test_run_url(httpserver, caplog):
     set_verbosity(3)
 
