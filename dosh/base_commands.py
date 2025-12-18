@@ -131,7 +131,7 @@ def run_command_and_return_result(
             command = ["cmd", "/c", *content.split()]
     else:
         shell_enabled = True
-        command = content.split()
+        command = content  # Keep as string when shell=True
 
     result = subprocess.run(command, shell=shell_enabled, cwd=current_working_dir)
     return_code = result.returncode
