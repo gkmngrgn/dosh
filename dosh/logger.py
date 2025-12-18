@@ -17,9 +17,11 @@ def get_logger() -> Logger:
         handler.setFormatter(
             colorlog.ColoredFormatter("%(log_color)s%(name)s => %(message)s")
         )
+        handler.setLevel(WARNING)  # Default to WARNING
 
         logger = colorlog.getLogger("DOSH")
         logger.addHandler(handler)
+        logger.setLevel(WARNING)  # Default to WARNING to suppress INFO messages
 
         __LOGGER = logger
 
@@ -37,4 +39,8 @@ def set_verbosity(verbosity: int = 0) -> None:
     else:
         level = ERROR
 
-    get_logger().setLevel(level)
+    logger = get_logger()
+    logger.setLevel(level)
+    # Also update handler levels
+    for handler in logger.handlers:
+        handler.setLevel(level)
