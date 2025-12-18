@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import os
 import shutil
+import subprocess
 import urllib.request
 from pathlib import Path
 from typing import List, Optional
@@ -157,6 +158,31 @@ def run(*commands: str) -> list[int]:
 def echo(message: str) -> None:
     """Print a message to the console."""
     print(message)
+
+
+def capture(command: str) -> str:
+    """Run a shell command and return its stdout output.
+
+    Example usage in Lua:
+        local output = cmd.capture("ls -la")
+        if output:find("myfile") then
+            cmd.info("Found!")
+        end
+    """
+    log_prefix = "[CAPTURE]"
+    logger.info("%s %s", log_prefix, command)
+
+    try:
+        result = subprocess.run(
+            command,
+            shell=True,
+            capture_output=True,
+            text=True,
+        )
+        return result.stdout
+    except Exception as e:
+        logger.error("%s Failed: %s", log_prefix, str(e))
+        return ""
 
 
 def run_url(url: str) -> int:
