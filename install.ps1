@@ -6,7 +6,7 @@ $ErrorActionPreference = "Stop"
 # Get system information
 $os = "windows"
 $architecture = if ([Environment]::Is64BitOperatingSystem) { "x86_64" } else { "386" }
-$downloadUrl = "https://github.com/gkmngrgn/dosh/releases/latest/download/dosh-$os-$architecture.exe"
+$downloadUrl = "https://github.com/miratcan/dosh/releases/latest/download/dosh-$os-$architecture.exe"
 $tempDir = [System.IO.Path]::GetTempPath() + [System.Guid]::NewGuid().ToString()
 $localDir = "$env:USERPROFILE\.local"
 $binDir = "$localDir\bin"

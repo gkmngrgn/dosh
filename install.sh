@@ -29,7 +29,7 @@ if [ "$os" = "darwin" ]; then
     os="macos"
 fi
 architecture=$(uname -m)
-download_url="https://github.com/gkmngrgn/dosh/releases/latest/download/dosh-$os-$architecture"
+download_url="https://github.com/miratcan/dosh/releases/latest/download/dosh-$os-$architecture"
 temp_dir=$(mktemp -d)
 bin_file="$install_dir/dosh"
 
