@@ -15,6 +15,7 @@ COMMANDS: Final = {
     "clone": cmd.clone,
     "ls": cmd.scan_directory,
     "run": cmd.run,
+    "capture": cmd.capture,
     "echo": cmd.echo,
     "run_url": cmd.run_url,
     # package managers

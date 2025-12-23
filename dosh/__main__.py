@@ -59,7 +59,7 @@ class ArgumentParser:
                 if level.isdigit():
                     return int(level)
 
-        return 2  # default verbosity level.
+        return 1  # default verbosity level (WARNING)
 
     def get_config_path(self) -> Optional[Path]:
         """Return file path of dosh script."""
