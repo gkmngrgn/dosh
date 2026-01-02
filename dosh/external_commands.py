@@ -4,13 +4,13 @@ from __future__ import annotations
 
 import os
 import shutil
-import subprocess
 import urllib.request
 from pathlib import Path
 from typing import List, Optional
 
 from dosh.base_commands import (
     CommandException,
+    CommandResult,
     check_command,
     copy_tree,
     is_url_valid,
@@ -131,61 +131,38 @@ def scan_directory(parent_dir: str = ".", opts: Optional[LuaTable] = None) -> Lu
     return response
 
 
-def run(*commands: str) -> list[int]:
+def run(*commands: str) -> list[CommandResult]:
     """Run a shell command using subprocess."""
     log_prefix = "[RUN]"
+
     current_working_dir = Path.cwd()
+
     results = []
 
     for command in commands:
         if command.lstrip().startswith("cd "):
             current_working_dir /= command[3:].strip()
+
             logger.info(
                 "%s Current working directory changed to %s",
                 log_prefix,
                 current_working_dir.resolve(),
             )
-            results.append(0)
+
+            results.append(CommandResult(0, ""))
+
             continue
 
         logger.info("%s %s", log_prefix, command)
+
         result = run_command_and_return_result(command, log_prefix, current_working_dir)
+
         results.append(result)
 
     return results
 
 
-def echo(message: str) -> None:
-    """Print a message to the console."""
-    print(message)
-
-
-def capture(command: str) -> str:
-    """Run a shell command and return its stdout output.
-
-    Example usage in Lua:
-        local output = cmd.capture("ls -la")
-        if output:find("myfile") then
-            cmd.info("Found!")
-        end
-    """
-    log_prefix = "[CAPTURE]"
-    logger.info("%s %s", log_prefix, command)
-
-    try:
-        result = subprocess.run(
-            command,
-            shell=True,
-            capture_output=True,
-            text=True,
-        )
-        return result.stdout
-    except Exception as e:
-        logger.error("%s Failed: %s", log_prefix, str(e))
-        return ""
-
-
-def run_url(url: str) -> int:
+def run_url(url: str) -> CommandResult:
     """Run a remote shell script directly."""
     if not is_url_valid(url):
         raise CommandException(f"URL is not valid: {url}")
@@ -194,8 +171,15 @@ def run_url(url: str) -> int:
         content = response.read().decode("utf-8")
 
     log_prefix = "[RUN_URL]"
+
     logger.info("%s %s", log_prefix, url)
+
     return run_command_and_return_result(content, log_prefix)
+
+
+def echo(message: str) -> None:
+    """Print a message to the console."""
+    print(message)
 
 
 def exists(path: str) -> bool:

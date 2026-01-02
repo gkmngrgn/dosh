@@ -69,6 +69,14 @@ class Task:
         return cls(**args)
 
 
+@dataclass
+class CommandResult:
+    """Return type of the command."""
+
+    return_code: int
+    command_output: str
+
+
 def check_command(
     command_name: str,
 ) -> Callable[[CommandCallable], CommandCallable]:
@@ -116,9 +124,10 @@ def run_command_and_return_result(
     content: str,
     log_prefix: str = "",
     current_working_dir: Path | None = None,
-) -> int:
+) -> CommandResult:
     """Run external command and return result with the captured output."""
     # use powershell for windows.
+    command: list[str] | str
     if OperatingSystem.get_current() == OperatingSystem.WINDOWS:
         shell_enabled = False
 
@@ -133,7 +142,25 @@ def run_command_and_return_result(
         shell_enabled = True
         command = content  # Keep as string when shell=True
 
-    result = subprocess.run(command, shell=shell_enabled, cwd=current_working_dir)
-    return_code = result.returncode
-    logger.debug("%s Return code: %s".strip(), log_prefix, return_code)
-    return return_code
+    with subprocess.Popen(
+        command,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT,
+        shell=shell_enabled,
+        cwd=current_working_dir,
+        text=True,
+    ) as process:
+        output_lines = []
+        if process.stdout:
+            for line in process.stdout:
+                print(line, end="")
+                output_lines.append(line)
+
+        return_code = process.wait()
+        command_output = "".join(output_lines)
+
+    logger.debug("%s Return code: %s", log_prefix, return_code)
+    return CommandResult(
+        return_code=return_code,
+        command_output=command_output,
+    )
