@@ -22,9 +22,14 @@ cmd.add_task{
       elseif env.IS_LINUX then
          message = "Your OS is Linux"
       else
-         message = "What the hell are you using?"
+         message = "Unknown OS"
       end
 
-      cmd.run("echo '" .. message .. "'")
+      local results = cmd.run("echo '" .. message .. "'")
+      if results[1].command_output:find("OS") then
+         cmd.debug("Command output is captured well.")
+      else
+         cmd.debug("Command not worked.")
+      end
    end
 }

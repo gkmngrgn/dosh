@@ -116,6 +116,10 @@ _Check out the file [`dosh_environments.lua`](./examples/dosh_environments.lua) 
 
 The main purpose of dosh to write one script that works on multiple operating systems and different shells. But it has to have a limit and it's nonsense to define functions for each cli command. So if you want to run a cli app (like `exa`, `bat`, `helix`, etc.), then you can use `cmd.run` for it.
 
+`cmd.run` returns a list of results for each command executed. Each result object contains:
+- `command_output`: The captured output of the command.
+- `return_code`: The exit code of the command.
+
 _Check out the file [`dosh_greet.lua`](./examples/dosh_greet.lua) for example usage._
 
 #### FILE SYSTEM OPERATIONS
