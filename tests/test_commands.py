@@ -75,19 +75,19 @@ def test_multiple_run(caplog):
 def test_multiple_run_with_cwd(caplog):
     set_verbosity(3)
     results = cmd.run(
-        "ls dist",
-        "cd dist",
+        "ls examples",
+        "cd examples",
         "ls",
         "cd ..",
         "ls",
     )
     assert [result.return_code for result in results.values()] == [0, 0, 0, 0, 0]
-    assert caplog.records[0].message == "[RUN] ls dist"
+    assert caplog.records[0].message == "[RUN] ls examples"
     assert caplog.records[1].message == "[RUN] Return code: 0"
     assert caplog.records[2].message.startswith(
         "[RUN] Current working directory changed to"
     )
-    assert Path(caplog.records[2].message.rsplit(" ", 1)[-1]).stem == "dist"
+    assert Path(caplog.records[2].message.rsplit(" ", 1)[-1]).stem == "examples"
     assert caplog.records[3].message == "[RUN] ls"
     assert caplog.records[4].message == "[RUN] Return code: 0"
     assert caplog.records[5].message.startswith(
