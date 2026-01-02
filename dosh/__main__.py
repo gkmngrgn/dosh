@@ -80,7 +80,7 @@ class ArgumentParser:
         return sys.argv[task_index], sys.argv[task_index + 1 :]
 
 
-class CLI:  # pylint: disable=too-few-public-methods
+class CLI:
     """DOSH command line interface."""
 
     def __init__(self) -> None:

@@ -10,7 +10,7 @@ __LOGGER: Optional[Logger] = None
 
 def get_logger() -> Logger:
     """Get logger of dosh."""
-    global __LOGGER  # pylint: disable=global-statement
+    global __LOGGER
 
     if __LOGGER is None:
         handler = colorlog.StreamHandler()
