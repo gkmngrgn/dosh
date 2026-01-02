@@ -8,7 +8,7 @@ __version__ = importlib.metadata.version("dosh_cli")
 
 
 @dataclass
-class DoshInitializer:  # pylint: disable=too-few-public-methods
+class DoshInitializer:
     """Pre-configured dosh initializer to store app-specific settings."""
 
     base_directory: Path = field(default_factory=Path.cwd)

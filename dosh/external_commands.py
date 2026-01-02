@@ -130,7 +130,7 @@ def scan_directory(parent_dir: str = ".", opts: Optional[LuaTable] = None) -> Lu
     return response
 
 
-def run(*commands: str) -> list[int]:
+def run(*commands: str) -> LuaTable:
     """Run a shell command using subprocess."""
     log_prefix = "[RUN]"
     current_working_dir = Path.cwd()
@@ -144,22 +144,26 @@ def run(*commands: str) -> list[int]:
                 log_prefix,
                 current_working_dir.resolve(),
             )
-            results.append(0)
+            results.append(
+                lua_runtime.table_from({"return_code": 0, "command_output": ""})
+            )
             continue
 
         logger.info("%s %s", log_prefix, command)
         result = run_command_and_return_result(command, log_prefix, current_working_dir)
-        results.append(result)
+        results.append(
+            lua_runtime.table_from(
+                {
+                    "return_code": result.return_code,
+                    "command_output": result.command_output,
+                }
+            )
+        )
 
-    return results
+    return lua_runtime.table_from(results)  # type: ignore[no-any-return]
 
 
-def echo(message: str) -> None:
-    """Print a message to the console."""
-    print(message)
-
-
-def run_url(url: str) -> int:
+def run_url(url: str) -> LuaTable:
     """Run a remote shell script directly."""
     if not is_url_valid(url):
         raise CommandException(f"URL is not valid: {url}")
@@ -169,7 +173,15 @@ def run_url(url: str) -> int:
 
     log_prefix = "[RUN_URL]"
     logger.info("%s %s", log_prefix, url)
-    return run_command_and_return_result(content, log_prefix)
+    result = run_command_and_return_result(content, log_prefix)
+    return lua_runtime.table_from(  # type: ignore[no-any-return]
+        {"return_code": result.return_code, "command_output": result.command_output}
+    )
+
+
+def echo(message: str) -> None:
+    """Print a message to the console."""
+    print(message)
 
 
 def exists(path: str) -> bool:

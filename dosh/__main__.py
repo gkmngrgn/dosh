@@ -59,7 +59,7 @@ class ArgumentParser:
                 if level.isdigit():
                     return int(level)
 
-        return 2  # default verbosity level.
+        return 1  # default verbosity level (WARNING)
 
     def get_config_path(self) -> Optional[Path]:
         """Return file path of dosh script."""
@@ -80,7 +80,7 @@ class ArgumentParser:
         return sys.argv[task_index], sys.argv[task_index + 1 :]
 
 
-class CLI:  # pylint: disable=too-few-public-methods
+class CLI:
     """DOSH command line interface."""
 
     def __init__(self) -> None:

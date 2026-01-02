@@ -53,7 +53,8 @@ def test_echo(capsys):
 def test_run(caplog):
     set_verbosity(3)
     results = cmd.run("echo Hello!")
-    assert results == [0]
+    assert results[1].return_code == 0
+    assert results[1].command_output.strip() == "Hello!"
     assert caplog.records[0].message == "[RUN] echo Hello!"
     assert caplog.records[1].message == "[RUN] Return code: 0"
 
@@ -61,7 +62,10 @@ def test_run(caplog):
 def test_multiple_run(caplog):
     set_verbosity(3)
     results = cmd.run("echo Hello!", "echo World!")
-    assert results == [0, 0]
+    assert results[1].return_code == 0
+    assert results[1].command_output.strip() == "Hello!"
+    assert results[2].return_code == 0
+    assert results[2].command_output.strip() == "World!"
     assert caplog.records[0].message == "[RUN] echo Hello!"
     assert caplog.records[1].message == "[RUN] Return code: 0"
     assert caplog.records[2].message == "[RUN] echo World!"
@@ -71,19 +75,19 @@ def test_multiple_run(caplog):
 def test_multiple_run_with_cwd(caplog):
     set_verbosity(3)
     results = cmd.run(
-        "ls dist",
-        "cd dist",
+        "ls examples",
+        "cd examples",
         "ls",
         "cd ..",
         "ls",
     )
-    assert results == [0, 0, 0, 0, 0]
-    assert caplog.records[0].message == "[RUN] ls dist"
+    assert [result.return_code for result in results.values()] == [0, 0, 0, 0, 0]
+    assert caplog.records[0].message == "[RUN] ls examples"
     assert caplog.records[1].message == "[RUN] Return code: 0"
     assert caplog.records[2].message.startswith(
         "[RUN] Current working directory changed to"
     )
-    assert Path(caplog.records[2].message.rsplit(" ", 1)[-1]).stem == "dist"
+    assert Path(caplog.records[2].message.rsplit(" ", 1)[-1]).stem == "examples"
     assert caplog.records[3].message == "[RUN] ls"
     assert caplog.records[4].message == "[RUN] Return code: 0"
     assert caplog.records[5].message.startswith(
@@ -109,7 +113,8 @@ def test_run_url(httpserver, caplog):
     assert content.decode("utf-8") == sh_content
 
     result = cmd.run_url(url)
-    assert result == 0
+    assert result.return_code == 0
+    assert result.command_output.strip() == "Hello!"
     assert (
         caplog.records[2].message
         == f"[RUN_URL] http://{httpserver.host}:{httpserver.port}/hello.sh"
